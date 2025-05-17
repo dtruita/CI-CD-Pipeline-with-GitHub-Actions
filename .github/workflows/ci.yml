@@ -1,4 +1,4 @@
-name: PHP CRUD CI/CD
+name: PHP CI/CD to Subdomain
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-    name: Build and Test
     runs-on: ubuntu-latest
     services:
       mysql:
@@ -33,7 +32,7 @@ jobs:
       with:
         php-version: '8.2'
 
-    - name: Wait for MySQL to be ready
+    - name: Wait for MySQL
       run: |
         sudo apt-get install -y mysql-client
         until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
@@ -41,10 +40,19 @@ jobs:
           sleep 3
         done
 
-    - name: Import `products.sql`
+    - name: Import database
       run: |
         mysql -h127.0.0.1 -uroot -proot testdb < products.sql
 
-    - name: Run PHP syntax check
+    - name: PHP Syntax Check
       run: |
         find . -name "*.php" -print0 | xargs -0 -n1 php -l
+
+    - name: Deploy to Subdomain via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_HOST }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./          
+        server-dir: ${{ secrets.FTP_REMOTE_PATH }}
