@@ -1,4 +1,4 @@
-name: PHP CI/CD to Subdomain
+name: PHP CI/CD to FTP
 
 on:
   push:
