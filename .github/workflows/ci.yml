@@ -1,4 +1,4 @@
-name: PHP CRUD CI/CD Pipeline
+name: PHP CRUD CI/CD
 
 on:
   push:
@@ -7,12 +7,25 @@ on:
     branches: [ "main" ]
 
 jobs:
-  check-php-syntax:
-    name: PHP Syntax Check
+  build:
+    name: Build and Test
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testdb
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v4
 
     - name: Setup PHP
@@ -20,6 +33,18 @@ jobs:
       with:
         php-version: '8.2'
 
-    - name: Syntax check for PHP files
+    - name: Wait for MySQL to be ready
+      run: |
+        sudo apt-get install -y mysql-client
+        until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
+          echo "Waiting for MySQL..."
+          sleep 3
+        done
+
+    - name: Import `products.sql`
+      run: |
+        mysql -h127.0.0.1 -uroot -proot testdb < products.sql
+
+    - name: Run PHP syntax check
       run: |
         find . -name "*.php" -print0 | xargs -0 -n1 php -l
