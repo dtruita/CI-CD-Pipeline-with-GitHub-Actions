@@ -1,8 +1,8 @@
 <?php
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$dbname = 'sample_db';
+$host = "localhost";
+$dbname = "gdrhkwmq_test";
+$username = "gdrhkwmq_root";
+$password = "i65=K{(m8505";
 
 $conn = new mysqli($host, $user, $pass, $dbname);
 
