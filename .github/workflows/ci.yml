@@ -16,8 +16,6 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.DB_ROOT_PASSWORD }}
           MYSQL_DATABASE: ${{ secrets.DB_NAME }}
-          MYSQL_USER: ${{ secrets.DB_USER }}
-          MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
         ports:
           - 3306:3306
         options: >-
@@ -45,10 +43,7 @@ jobs:
 
       - name: Import database
         run: |
-          mysql -h127.0.0.1 \
-            -u${{ secrets.DB_USER }} \
-            -p${{ secrets.DB_PASSWORD }} \
-            ${{ secrets.DB_NAME }} < products.sql
+          mysql -h127.0.0.1 -uroot -p${{ secrets.DB_ROOT_PASSWORD }} ${{ secrets.DB_NAME }} < products.sql
 
       - name: PHP Syntax Check
         run: |
