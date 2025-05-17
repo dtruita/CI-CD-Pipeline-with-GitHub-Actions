@@ -9,6 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     services:
       mysql:
         image: mysql:5.7
@@ -24,35 +25,36 @@ jobs:
           --health-retries=3
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.2'
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
 
-    - name: Wait for MySQL
-      run: |
-        sudo apt-get install -y mysql-client
-        until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
-          echo "Waiting for MySQL..."
-          sleep 3
-        done
+      - name: Wait for MySQL
+        run: |
+          sudo apt-get install -y mysql-client
+          until mysqladmin ping -h127.0.0.1 -uroot -proot --silent; do
+            echo "Waiting for MySQL..."
+            sleep 3
+          done
 
-    - name: Import database
-      run: |
-        mysql -h127.0.0.1 -uroot -proot testdb < products.sql
+      - name: Import database
+        run: |
+          mysql -h127.0.0.1 -uroot -proot testdb < products.sql
 
-    - name: PHP Syntax Check
-      run: |
-        find . -name "*.php" -print0 | xargs -0 -n1 php -l
+      - name: PHP Syntax Check
+        run: |
+          find . -name "*.php" -print0 | xargs -0 -n1 php -l
 
-    - name: Deploy to Subdomain via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: /home/gdrhkwmq/public_html/dominictruita.com/crud/
-        dry-run: true
+      - name: Deploy to Subdomain via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.2
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /home/gdrhkwmq/public_html/dominictruita.com/crud/
+          # Uncomment the line below to simulate deployment without uploading
+          # dry-run: true
