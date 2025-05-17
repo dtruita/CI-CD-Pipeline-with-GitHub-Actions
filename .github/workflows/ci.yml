@@ -1,4 +1,4 @@
-name: PHP CI/CD to FTP2
+name: PHP CI/CD to FTP3
 
 on:
   push:
