@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS sample_db;
-USE sample_db;
+CREATE DATABASE IF NOT EXISTS gdrhkwmq_test;
+USE gdrhkwmq_test;
 
 CREATE TABLE IF NOT EXISTS products (
     id INT AUTO_INCREMENT PRIMARY KEY,
