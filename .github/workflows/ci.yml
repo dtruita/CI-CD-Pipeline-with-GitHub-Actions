@@ -49,7 +49,7 @@ jobs:
         run: |
           find . -name "*.php" -print0 | xargs -0 -n1 php -l
 
-      - name: Deploy to Subdomain via FTP
+      - name: Deploy files via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
