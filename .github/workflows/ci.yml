@@ -34,16 +34,21 @@ jobs:
           php-version: '8.2'
 
       - name: Wait for MySQL
+        env:
+          DB_PASS: ${{ secrets.DB_PASS }}
         run: |
           sudo apt-get install -y mysql-client
-          until mysqladmin ping -h127.0.0.1 -uroot -p${{ secrets.DB_PASS }} --silent; do
+          until mysqladmin ping -h127.0.0.1 -uroot -p$DB_PASS --silent; do
             echo "Waiting for MySQL..."
             sleep 3
           done
 
       - name: Import database
+        env:
+          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-          mysql -h127.0.0.1 -uroot -p${{ secrets.DB_PASS }} ${{ secrets.DB_NAME }} < products.sql
+          mysql -h127.0.0.1 -uroot -p$DB_PASS $DB_NAME < products.sql
 
       - name: PHP Syntax Check
         run: |
